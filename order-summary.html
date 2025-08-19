@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Summary | Levara Style Wardrobe</title>
+  <link rel="icon" type="image/png" href="image/FAVICON.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #972e4e;
+      --secondary: #f7f7f7;
+      --accent: #f3c86e;
+      --text-dark: #333;
+      --text-light: #fff;
+      --radius: 1rem;
+      --shadow: 0 10px 24px 0 rgba(151, 46, 78, 0.07);
+      --border: 1px solid #e8e9ef;
+      --max-width: 540px;
+      --white: #fff;
+      --success: #4caf50;
+      --danger: #f44336;
+      --step-bg: #f9e5ef;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', Arial, sans-serif; background: var(--secondary); color: var(--text-dark);
+      min-height: 100vh; line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    a { text-decoration: none; color: inherit; transition: color .2s; }
+    img { max-width: 100%; display: block; border-radius: .5rem; }
+    button, input, select, textarea { font-family: inherit; outline: none; border: none; background: none; }
+    main {
+      max-width: var(--max-width);
+      margin: 2.5rem auto 0 auto;
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 2.5rem 1.5rem 2rem 1.5rem;
+    }
+    .summary-header {
+      text-align: center;
+      margin-bottom: 2.2rem;
+    }
+    .summary-header .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .summary-header .logo img {
+      width: 38px;
+      height: 38px;
+    }
+    .summary-title {
+      color: var(--primary);
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin-top: 0.8rem;
+      margin-bottom: .25rem;
+      letter-spacing: .5px;
+    }
+    .summary-desc {
+      color: #6c7a91;
+      font-size: 1.09rem;
+      margin-bottom: 1.6rem;
+      margin-top: .4rem;
+    }
+    .order-details-box {
+      background: var(--step-bg);
+      border-radius: .7rem;
+      box-shadow: 0 2px 12px 0 rgba(151,46,78,0.08);
+      padding: 1.2rem 1rem 1.4rem 1rem;
+      margin-bottom: 2rem;
+    }
+    .order-details-title {
+      font-size: 1.21rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 1.12rem;
+    }
+    .order-details-list {
+      list-style: none;
+      margin-bottom: .7rem;
+    }
+    .order-details-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1.04rem;
+      margin-bottom: .9rem;
+      color: #444;
+    }
+    .order-details-list li span {
+      font-weight: 600;
+      color: var(--primary);
+    }
+    .order-total {
+      font-size: 1.14rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-top: .2rem;
+      text-align: right;
+      margin-bottom: .7rem;
+    }
+    .step-box {
+      background: var(--white);
+      border-radius: .6rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 2rem;
+      padding: 1.1rem 1rem;
+      position: relative;
+      border: 1px solid #ececec;
+    }
+    .step-title {
+      font-size: 1.16rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: .7rem;
+    }
+    .step-desc {
+      color: #555;
+      font-size: 1.03rem;
+      margin-bottom: .8rem;
+    }
+    .step-success {
+      color: var(--success);
+      font-size: 1.11rem;
+      margin-bottom: .7rem;
+      font-weight: 600;
+    }
+    .confirmation-section {
+      text-align: center;
+      margin-bottom: 2.3rem;
+    }
+    .confirmation-section .confirm-btn {
+      padding: 0.9rem 2.2rem;
+      background: var(--primary);
+      color: var(--white);
+      border-radius: .6rem;
+      border: none;
+      font-weight: 700;
+      font-size: 1.09rem;
+      cursor: pointer;
+      box-shadow: 0 2px 8px 0 rgba(151,46,78,0.09);
+      transition: background .2s, color .2s;
+      margin-top: .9rem;
+    }
+    .confirmation-section .confirm-btn:hover {
+      background: var(--accent);
+      color: var(--primary);
+    }
+    .confirmation-message {
+      background: var(--success);
+      color: var(--white);
+      padding: 1rem 1rem .8rem 1rem;
+      border-radius: .7rem;
+      font-size: 1.11rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 6px 0 rgba(76,175,80,0.13);
+      font-weight: 600;
+      display: none;
+      animation: fadeIn 0.7s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    .payment-section {
+      background: var(--step-bg);
+      border-radius: .6rem;
+      box-shadow: 0 2px 8px 0 rgba(151,46,78,0.09);
+      padding: 1.1rem 1rem;
+      text-align: center;
+      display: none;
+      animation: fadeIn 0.8s;
+    }
+    .payment-section .payment-title {
+      color: var(--primary);
+      font-size: 1.18rem;
+      font-weight: 700;
+      margin-bottom: .55rem;
+    }
+    .payment-section .payment-desc {
+      color: #333;
+      font-size: 1.04rem;
+      margin-bottom: .6rem;
+    }
+    .payment-section .payment-link-btn {
+      background: var(--accent);
+      color: var(--white);
+      border-radius: .5rem;
+      padding: .9rem 2rem;
+      font-weight: 700;
+      font-size: 1.07rem;
+      border: none;
+      cursor: pointer;
+      margin-bottom: .7rem;
+      box-shadow: 0 2px 8px 0 rgba(243,200,110,0.11);
+      transition: background .2s, color .2s;
+    }
+    .payment-section .payment-link-btn:hover {
+      background: var(--primary);
+      color: var(--white);
+    }
+    .payment-section .warning {
+      color: var(--danger);
+      font-size: 1.01rem;
+      margin-top: .5rem;
+      font-weight: 600;
+    }
+    .info-note {
+      color: #6c7a91;
+      font-size: .99rem;
+      margin: 2rem 0 1.2rem 0;
+      text-align: center;
+    }
+    footer {
+      background: var(--primary);
+      color: var(--white);
+      padding: 2rem 0 1.2rem;
+      margin-top: 2.4rem;
+      border-radius: var(--radius) var(--radius) 0 0;
+      text-align: center;
+      font-size: .99rem;
+      letter-spacing: .3px;
+    }
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .68rem;
+      color: var(--accent);
+      font-size: 1.13rem;
+      font-weight: 700;
+      margin-bottom: .5rem;
+    }
+    .footer-logo img {
+      width: 28px;
+      height: 28px;
+    }
+    .footer-contact {
+      color: #f3c86e;
+      font-size: .99rem;
+      margin-bottom: .6rem;
+      line-height: 1.7;
+    }
+    .footer-bottom {
+      color: #fff2ef;
+      font-size: .97rem;
+      opacity: .92;
+      margin-top: 1.3rem;
+    }
+    @media (max-width: 700px) {
+      main {
+        max-width: 99vw;
+        padding: 1.3rem 0.3rem 1.2rem 0.3rem;
+        margin: 1.1rem auto 0 auto;
+      }
+      .summary-title { font-size: 1.39rem;}
+      .order-details-title { font-size: 1.09rem;}
+      .step-title { font-size: 1.07rem;}
+      .confirmation-section .confirm-btn,
+      .payment-section .payment-link-btn { font-size: 1rem; padding: 0.8rem 1.1rem; }
+    }
+    @media (max-width: 430px) {
+      .summary-header .logo img, .footer-logo img { width: 22px; height: 22px; }
+      .summary-header .logo { font-size: 1.1rem; }
+      main { padding: 0.8rem 0.1rem 0.7rem 0.1rem;}
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="summary-header">
+      <div class="logo">
+        <img src="image/LOGO.png" alt="Levara Style Wardrobe Logo" />
+        Levara Style Wardrobe
+      </div>
+      <div class="summary-title">Order Overview</div>
+      <div class="summary-desc">
+        Thank you for your purchase! Please review your order below and follow the next steps to complete your transaction smoothly.
+      </div>
+    </div>
+
+    <div class="order-details-box">
+      <div class="order-details-title">Order Details</div>
+      <ul class="order-details-list">
+        <li>
+          Product(s) Selected:
+          <span>Classic White Tee, Denim Jacket</span>
+        </li>
+        <li>
+          Quantity:
+          <span>2 Items</span>
+        </li>
+        <li>
+          Delivery Address:
+          <span>Santa Rita Street, Barangay Moonwalk, Parañaque City, NCR, 1709</span>
+        </li>
+        <li>
+          Contact Number:
+          <span>+63 915 304 7861</span>
+        </li>
+        <li>
+          Chosen Payment Option:
+          <span>GCash</span>
+        </li>
+      </ul>
+      <div class="order-total">Order Total: ₱1,098.00</div>
+    </div>
+
+    <div class="step-box">
+      <div class="step-title"><i class="ri-check-double-line"></i> Step 1: Submission Confirmation</div>
+      <div class="step-desc">
+        Your order has been successfully submitted. A dedicated member of our team will reach out soon to confirm your product choices, color preferences, and availability. Kindly check your messages and verify these details when contacted.
+      </div>
+      <div class="step-success" id="step-success-msg" style="display:none;">
+        Confirmation received! Thank you for verifying your order details.
+      </div>
+    </div>
+
+    <div class="confirmation-section">
+      <button class="confirm-btn" id="confirm-btn">Confirm My Order Details</button>
+      <div class="confirmation-message" id="confirmation-message">
+        Your confirmation has been recorded. We appreciate your prompt response.<br>
+        A payment link will be sent to you shortly, tailored to your selected payment method.
+      </div>
+    </div>
+
+    <div class="payment-section" id="payment-section">
+      <div class="payment-title"><i class="ri-secure-payment-line"></i> Step 2: Payment Instructions</div>
+      <div class="payment-desc">
+        Please follow the link below to complete your payment. Payment must be made within <strong>24 hours</strong> to secure your items. Orders not paid within this timeframe will be automatically cancelled.
+      </div>
+      <button class="payment-link-btn" onclick="window.open('https://pay.levarastyle.online', '_blank')">Proceed to Payment</button>
+      <div class="warning">
+        To avoid cancellation, please complete payment as soon as possible. If you have any questions, reach out to our team for assistance.
+      </div>
+    </div>
+
+    <div class="info-note">
+      We value your trust and strive to ensure a secure and transparent shopping experience. All communications regarding your order will come directly from our official contact channels.
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-logo">
+      <img src="image/LOGO.png" alt="Levara Style Wardrobe Logo" />
+      Levara Style Wardrobe
+    </div>
+    <div class="footer-contact">
+      Santa Rita Street, Barangay Moonwalk, Parañaque City, NCR, 1709, Philippines.<br>
+      Email: <a href="mailto:admin@levarastyle.online" style="color:var(--accent);">admin@levarastyle.online</a><br>
+      Phone: <a href="tel:+639153047861" style="color:var(--accent);">+63 915 304 7861</a>
+    </div>
+    <div class="footer-bottom">
+      &copy; <span id="footer-year"></span> Levara Style Wardrobe. All rights reserved.
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+    // Confirmation step
+    const confirmBtn = document.getElementById('confirm-btn');
+    const confirmationMessage = document.getElementById('confirmation-message');
+    const stepSuccessMsg = document.getElementById('step-success-msg');
+    const paymentSection = document.getElementById('payment-section');
+
+    confirmBtn.addEventListener('click', function() {
+      confirmBtn.disabled = true;
+      confirmationMessage.style.display = 'block';
+      stepSuccessMsg.style.display = 'block';
+      setTimeout(function() {
+        paymentSection.style.display = 'block';
+        paymentSection.scrollIntoView({ behavior: 'smooth' });
+      }, 1100);
+    });
+  </script>
+</body>
+</html>
