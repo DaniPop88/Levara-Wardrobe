@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Levara Style Wardrobe | Filipino Fashion & Apparel</title>
+  <link rel="icon" type="image/png" href="image/FAVICON.png" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <!-- Remixicon for icons -->
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #972e4e;
+      --secondary: #f7f7f7;
+      --accent: #f3c86e;
+      --text-dark: #333;
+      --text-light: #fff;
+      --radius: 1rem;
+      --shadow: 0 10px 24px 0 rgba(151, 46, 78, 0.07);
+      --border: 1px solid #e8e9ef;
+      --cart-btn-size: 55px;
+      --cart-btn-offset: 36px;
+      --white: #fff;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', Arial, sans-serif; background: var(--secondary); color: var(--text-dark);
+      min-height: 100vh; line-height: 1.6;
+    }
+    a { text-decoration: none; color: inherit; transition: color .2s; }
+    img { max-width: 100%; display: block; border-radius: .5rem; }
+    button, input { font-family: inherit; outline: none; border: none; background: none; }
+    /* Header */
+    .header {
+      width: 100%; background: var(--primary); color: var(--text-light);
+      box-shadow: var(--shadow); position: sticky; top: 0; z-index: 99;
+    }
+    .nav {
+      display: flex; align-items: center; justify-content: space-between;
+      max-width: 1200px; margin: 0 auto; padding: 1rem 2rem;
+      position: relative;
+    }
+    .nav-logo {
+      display: flex; align-items: center; font-size: 1.5rem;
+      font-weight: 700; gap: 0.75rem; letter-spacing: 1px; color: var(--accent);
+    }
+    .nav-logo img { width: 40px; height: 40px; }
+    .nav-list {
+      display: flex; align-items: center; gap: 2rem;
+      position: relative;
+    }
+    .nav-link {
+      color: var(--text-light); font-weight: 500; font-size: 1rem;
+      padding: 0.25rem 0; position: relative; transition: color .2s;
+    }
+    .nav-link.active, .nav-link:hover { color: var(--accent); }
+    .nav-actions { display: flex; align-items: center; gap: 1.2rem; }
+    .nav-toggle {
+      display: none; font-size: 2rem; background: none; border: none; cursor: pointer; color: var(--accent); margin-left: 1rem;
+      z-index: 200;
+    }
+    /* Cart Button Left Bottom */
+    .floating-cart-btn {
+      position: fixed;
+      left: var(--cart-btn-offset);
+      bottom: var(--cart-btn-offset);
+      z-index: 150;
+      background: var(--primary);
+      color: var(--white);
+      border-radius: 50%;
+      width: var(--cart-btn-size);
+      height: var(--cart-btn-size);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      box-shadow: 0 2px 8px 0 rgba(151,46,78,0.15);
+      cursor: pointer;
+      border: none;
+      transition: background .2s, color .2s, box-shadow .2s;
+    }
+    .floating-cart-btn:hover {
+      background: var(--accent);
+      color: var(--primary);
+    }
+    @media (max-width: 500px) {
+      .floating-cart-btn {
+        left: 12px;
+        bottom: 12px;
+        width: 45px;
+        height: 45px;
+        font-size: 1.5rem;
+      }
+    }
+    /* Cart Sidebar & Overlay */
+    .cart-overlay {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(151,46,78,0.16); z-index: 100; display: none;
+    }
+    .cart-overlay.active { display: block; }
+    .cart-sidebar {
+      position: fixed; top: 0; right: -100%; width: 350px; max-width: 96vw; height: 100%;
+      background: var(--white); box-shadow: -2px 0 16px 0 rgba(151,46,78,0.10);
+      z-index: 101; padding: 2rem 1.5rem; display: flex; flex-direction: column; transition: right .25s;
+      overflow-y: auto;
+    }
+    .cart-sidebar.open { right: 0; }
+    .cart-sidebar-header {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;
+    }
+    .cart-sidebar-title { font-size: 1.2rem; font-weight: 700; color: var(--primary); }
+    .cart-sidebar-close {
+      font-size: 1.8rem; color: var(--primary); cursor: pointer; background: none; border: none;
+      transition: color .2s;
+    }
+    .cart-items { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 1.2rem; }
+    .cart-item {
+      display: flex; gap: 1rem; align-items: flex-start; border-bottom: 1px solid #f0f1f5; padding-bottom: 1rem;
+    }
+    .cart-item-img { width: 60px; height: 60px; object-fit: contain; border-radius: .5rem; background: #f7f8fb; }
+    .cart-item-details { flex: 1; }
+    .cart-item-title { font-size: 1rem; font-weight: 600; margin-bottom: .15rem; }
+    .cart-item-price { color: var(--primary); font-weight: 500; margin-bottom: .15rem; font-size: 0.95rem; }
+    .cart-item-qty {
+      display: flex; align-items: center; gap: .4rem; margin-top: .25rem;
+    }
+    .cart-item-qty-btn {
+      font-size: 1.15rem; background: var(--secondary); border-radius: .3rem; padding: 2px 8px; cursor: pointer;
+      color: var(--primary); border: 1px solid #dbe4f9; transition: background .2s, color .2s;
+    }
+    .cart-item-qty-btn:hover { background: var(--primary); color: var(--white); }
+    .cart-item-remove {
+      color: #e14d4d; font-size: 1.2rem; margin-left: .5rem; cursor: pointer; background: none; border: none; transition: color .2s;
+    }
+    .cart-sidebar-footer {
+      margin-top: 2rem; display: flex; align-items: center; justify-content: space-between; font-weight: 600; font-size: 1.05rem;
+    }
+    .cart-sidebar-footer .checkout-btn {
+      padding: 0.7rem 1.6rem; background: var(--primary); color: var(--white); border-radius: .5rem; border: none;
+      font-weight: 600; cursor: pointer; transition: background .2s;
+    }
+    .cart-sidebar-footer .checkout-btn:hover { background: var(--accent); color: var(--primary); }
+    /* Main Content */
+    main { max-width: 1170px; margin: 0 auto; padding: 2.5rem 1.25rem 3rem; }
+    .hero {
+      display: flex; align-items: center; justify-content: space-between; gap: 3rem;
+      background: linear-gradient(90deg, #f9e5ef 0%, #f8f5ff 100%);
+      border-radius: var(--radius); padding: 2rem 2.5rem; margin-bottom: 2.5rem;
+      box-shadow: var(--shadow); flex-wrap: wrap;
+    }
+    .hero-content { flex: 1; min-width: 260px; }
+    .hero-title {
+      font-size: 2.6rem; font-weight: 800; color: var(--primary); line-height: 1.1; margin-bottom: 1.1rem;
+    }
+    .hero-desc { color: #6c7a91; font-size: 1.12rem; margin-bottom: 1.6rem; max-width: 430px; }
+    .hero-btns { display: flex; gap: 1.1rem; }
+    .btn-primary, .btn-secondary {
+      padding: 0.95rem 2.3rem; font-size: 1rem; border-radius: .7rem; font-weight: 700;
+      cursor: pointer; transition: background .2s, color .2s, box-shadow .2s; box-shadow: 0 2px 8px 0 rgba(151,46,78,0.08);
+      outline: none; border: none;
+    }
+    .btn-primary { background: var(--primary); color: var(--white); }
+    .btn-primary:hover { background: var(--accent); color: var(--primary);}
+    .btn-secondary { background: var(--white); color: var(--primary); border: 2px solid var(--primary);}
+    .btn-secondary:hover { background: var(--primary); color: var(--white);}
+    .hero-img-container { min-width: 220px; flex: 1; display: flex; justify-content: flex-end; align-items: center;}
+    .hero-img {
+      width: 320px; max-width: 100%; border-radius: var(--radius); box-shadow: 0 2px 24px 0 rgba(151,46,78,.11); background: #f2f8ff; object-fit: contain;
+    }
+    /* Products */
+    .section-title {
+      font-size: 2.1rem; color: var(--primary); font-weight: 700; text-align: center; margin-bottom: 2rem; margin-top: 1rem;
+    }
+    .products-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 2rem; margin-bottom: 3rem;
+    }
+    .product-card {
+      background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.5rem 1.1rem;
+      display: flex; flex-direction: column; align-items: center; transition: transform .18s, box-shadow .2s; position: relative;
+    }
+    .product-card:hover { transform: translateY(-6px) scale(1.03); box-shadow: 0 12px 32px 0 rgba(151,46,78,.12);}
+    .product-img { width: 120px; height: 120px; object-fit: contain; margin-bottom: 1.1rem; background: #f7f8fb; border-radius: .5rem;}
+    .product-name { font-weight: 700; font-size: 1.07rem; text-align: center; margin-bottom: .4rem;}
+    .product-desc { font-size: 0.97rem; color: #6c7a91; margin-bottom: 0.7rem; text-align: center;}
+    .product-stock { font-size: 0.95rem; margin-bottom: 0.3rem; color: var(--primary);}
+    .product-price { font-weight: 600; font-size: 1.1rem; color: var(--primary); margin-bottom: 1rem;}
+    .product-add {
+      background: var(--primary); color: var(--white); border-radius: .4rem; padding: 0.65rem 1.5rem; font-weight: 600; cursor: pointer; font-size: 1rem; border: none;
+      transition: background .2s; display: flex; align-items: center; gap: .45rem;
+    }
+    .product-add:hover { background: var(--accent); color: var(--primary);}
+    .product-badge {
+      position: absolute; top: 1.2rem; right: 1.2rem; background: var(--accent); color: var(--white); font-weight: 600; font-size: .92rem;
+      padding: 0.22rem 0.8rem; border-radius: .5rem; letter-spacing: 1px; box-shadow: 0 2px 8px 0 rgba(243,200,110,0.08);
+    }
+    /* Info Sections */
+    .info-sections {
+      display: flex; flex-wrap: wrap; gap: 2rem; margin-bottom: 2.5rem; justify-content: center;
+    }
+    .info-card {
+      background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.6rem 1.2rem; min-width: 240px; flex: 1 1 240px;
+      display: flex; flex-direction: column; align-items: center; text-align: center; max-width: 370px;
+    }
+    .info-icon { font-size: 2.3rem; color: var(--primary); margin-bottom: 0.7rem;}
+    .info-title { font-size: 1.15rem; font-weight: 700; margin-bottom: .4rem;}
+    .info-desc { color: #6c7a91; font-size: 0.97rem;}
+    /* Policy Sections */
+    .policy-sections {
+      display: flex; flex-wrap: wrap; gap: 2rem; margin: 2rem 0; justify-content: center;
+    }
+    .policy-card {
+      background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 2rem 1.5rem; min-width: 260px; flex: 1 1 260px;
+      max-width: 400px; text-align: left; display: flex; flex-direction: column;
+    }
+    .policy-title { font-size: 1.25rem; font-weight: 700; margin-bottom: .7rem; color: var(--primary);}
+    .policy-body { color: #6c7a91; font-size: 1rem; line-height: 1.7;}
+    /* Footer */
+    .footer {
+      background: var(--primary); color: var(--white); padding: 3rem 0 1.2rem; margin-top: 3rem; border-radius: var(--radius) var(--radius) 0 0;
+    }
+    .footer-container {
+      max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 2.2rem; justify-content: space-between; align-items: flex-start; padding: 0 2rem;
+    }
+    .footer-brand { flex: 1 1 240px; margin-bottom: 2rem;}
+    .footer-logo {
+      display: flex; align-items: center; font-size: 1.4rem; font-weight: 700; gap: .6rem; margin-bottom: 0.6rem; color: var(--accent);
+    }
+    .footer-logo img { width: 34px; height: 34px; }
+    .footer-desc { color: #f3c86e; font-size: 1.01rem; margin-bottom: .7rem;}
+    .footer-links-group { flex: 1 1 160px; margin-bottom: 2rem;}
+    .footer-links-title { font-size: 1.1rem; font-weight: 700; margin-bottom: .45rem; letter-spacing: .5px;}
+    .footer-links { display: flex; flex-direction: column; gap: .4rem;}
+    .footer-link { color: #fff2ef; font-size: .99rem; transition: color .2s; opacity: .94;}
+    .footer-link:hover { color: var(--accent);}
+    .footer-bottom { text-align: center; font-size: .97rem; color: #fff2ef; margin-top: 2rem; opacity: .85;}
+    .footer-bottom a { color: #fff; font-weight: 600; text-decoration: underline; transition: color .2s;}
+    .footer-bottom a:hover { color: var(--accent);}
+    /* Responsive Design */
+    @media (max-width: 1100px) {
+      .hero { flex-direction: column; text-align: center; }
+      .hero-content, .hero-img-container { justify-content: center; }
+      .hero-img { margin: 1.5rem auto 0 auto; }
+    }
+    @media (max-width: 900px) {
+      .nav-list { gap: 1.3rem; }
+      .footer-container { flex-direction: column; gap: 2.8rem; align-items: flex-start; }
+    }
+    @media (max-width: 776px) {
+      .nav { padding: 1rem 1rem; }
+      .main { padding: 1.5rem .5rem 2rem; }
+      .products-grid, .info-sections, .policy-sections { gap: 1.1rem; }
+      .footer-container { padding: 0 1rem; }
+    }
+    @media (max-width: 700px) {
+      .nav-list {
+        position: fixed; top: 0; right: -100vw; width: 80vw; height: 100vh; background: var(--primary);
+        flex-direction: column; gap: 2rem; padding-top: 5rem; z-index: 120; transition: right .25s;
+        box-shadow: -2px 0 18px 0 rgba(151,46,78,0.09);
+      }
+      .nav-list.open { right: 0; }
+      .nav-toggle { display: block; }
+      /* Hide nav-close in header, show in nav-list */
+      .nav-close {
+        display: none;
+      }
+      .nav-list .nav-close {
+        display: block;
+        position: absolute;
+        top: 1.1rem;
+        right: 1.6rem;
+        background: none;
+        border: none;
+        font-size: 2rem;
+        color: var(--accent);
+        cursor: pointer;
+        z-index: 999;
+      }
+    }
+    @media (max-width: 600px) {
+      .hero { padding: 1.2rem .7rem; }
+      .policy-card { padding: 1.5rem .7rem; }
+      .footer { padding: 2rem 0 1.1rem; }
+    }
+    @media (max-width: 430px) {
+      .cart-sidebar { width: 98vw; padding: 1.2rem .6rem; }
+      .footer-logo img { width: 28px; height: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header" id="header">
+    <nav class="nav">
+      <a href="index.html" class="nav-logo">
+        <img src="image/LOGO.png" alt="Levara Style Wardrobe Logo" />
+        Levara Style Wardrobe
+      </a>
+      <ul class="nav-list" id="nav-list">
+        <li><a href="index.html" class="nav-link active">Home</a></li>
+        <li><a href="#shop" class="nav-link">Shop</a></li>
+        <li><a href="#about" class="nav-link">About</a></li>
+        <li><a href="#policies" class="nav-link">Policies</a></li>
+        <li><a href="#contact" class="nav-link">Contact</a></li>
+        <!-- Burger menu close button inside nav-list for mobile -->
+        <button class="nav-close" id="nav-close" aria-label="Close menu"><i class="ri-close-line"></i></button>
+      </ul>
+      <div class="nav-actions">
+        <button class="nav-toggle" id="nav-toggle" aria-label="Open menu"><i class="ri-menu-3-line"></i></button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Floating Cart Button -->
+  <button class="floating-cart-btn" id="cart-btn" aria-label="Open cart">
+    <i class="ri-shopping-bag-3-line"></i>
+  </button>
+
+  <!-- Cart Sidebar & Overlay -->
+  <div class="cart-overlay" id="cart-overlay"></div>
+  <aside class="cart-sidebar" id="cart-sidebar" aria-label="Shopping cart">
+    <div class="cart-sidebar-header">
+      <div class="cart-sidebar-title">My Cart</div>
+      <button class="cart-sidebar-close" id="cart-close-btn" aria-label="Close cart"><i class="ri-close-line"></i></button>
+    </div>
+    <div class="cart-items" id="cart-items">
+      <!-- Cart items will be rendered here by JS -->
+    </div>
+    <div class="cart-sidebar-footer">
+      <span><span id="cart-items-count">0</span> items | <span id="cart-total">₱0</span></span>
+      <button class="checkout-btn" id="checkout-btn">Checkout</button>
+    </div>
+  </aside>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero" id="about">
+      <div class="hero-content">
+        <h1 class="hero-title">Welcome to <span style="color:var(--accent)">Levara Style Wardrobe</span></h1>
+        <div class="hero-desc">
+          Bringing you the latest in Filipino fashion. Stylish, durable, and trendy apparel at prices you’ll love. Shop local, feel global!
+        </div>
+        <div class="hero-btns">
+          <a href="#shop" class="btn-primary">Shop Now</a>
+          <a href="#newsletter" class="btn-secondary">Get Updates</a>
+        </div>
+      </div>
+      <div class="hero-img-container">
+        <img src="image/placeholder.png" alt="Levara Fashion" class="hero-img" />
+      </div>
+    </section>
+
+    <!-- Info Sections -->
+    <section class="info-sections">
+      <div class="info-card">
+        <div class="info-icon"><i class="ri-truck-line"></i></div>
+        <div class="info-title">Fast & Reliable Delivery</div>
+        <div class="info-desc">Nationwide shipping from Parañaque City, NCR, Philippines.</div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon"><i class="ri-shield-check-line"></i></div>
+        <div class="info-title">Secure Payments</div>
+        <div class="info-desc">Shop with confidence. Your data and payments are protected.</div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon"><i class="ri-customer-service-2-line"></i></div>
+        <div class="info-title">Local Customer Care</div>
+        <div class="info-desc">Contact us Monday – Saturday, 8AM – 6PM. We’re ready to help!</div>
+      </div>
+    </section>
+
+    <!-- Shop / Products -->
+    <section id="shop">
+      <h2 class="section-title">New Arrivals</h2>
+      <div class="products-grid" id="products-grid">
+        <div class="product-card" data-id="1">
+          <span class="product-badge">In Stock: 12</span>
+          <img src="image/placeholder.png" alt="Classic White Tee" class="product-img" />
+          <div class="product-name">Classic White Tee</div>
+          <div class="product-desc">Stylish and comfortable cotton tee for everyday wear.</div>
+          <div class="product-price">₱299.00</div>
+          <button class="product-add"><i class="ri-shopping-cart-2-line"></i> Add to Cart</button>
+        </div>
+        <div class="product-card" data-id="2">
+          <span class="product-badge">In Stock: 7</span>
+          <img src="image/placeholder.png" alt="Office Skirt" class="product-img" />
+          <div class="product-name">Office Skirt</div>
+          <div class="product-desc">Chic formal skirt, perfect for office or events.</div>
+          <div class="product-price">₱399.00</div>
+          <button class="product-add"><i class="ri-shopping-cart-2-line"></i> Add to Cart</button>
+        </div>
+        <div class="product-card" data-id="3">
+          <span class="product-badge">In Stock: 5</span>
+          <img src="image/placeholder.png" alt="Denim Jacket" class="product-img" />
+          <div class="product-name">Denim Jacket</div>
+          <div class="product-desc">Trendy denim jacket for all seasons.</div>
+          <div class="product-price">₱799.00</div>
+          <button class="product-add"><i class="ri-shopping-cart-2-line"></i> Add to Cart</button>
+        </div>
+        <div class="product-card" data-id="4">
+          <span class="product-badge">In Stock: 15</span>
+          <img src="image/placeholder.png" alt="Fashion Scarf" class="product-img" />
+          <div class="product-name">Fashion Scarf</div>
+          <div class="product-desc">Lightweight scarf with trendy prints for any outfit.</div>
+          <div class="product-price">₱199.00</div>
+          <button class="product-add"><i class="ri-shopping-cart-2-line"></i> Add to Cart</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="info-sections" style="margin-bottom:2.8rem;" id="about">
+      <div class="info-card">
+        <div class="info-icon"><i class="ri-user-star-line"></i></div>
+        <div class="info-title">Our Story</div>
+        <div class="info-desc">Founded by Leah Sapio in Labrador, Parañaque City, we’re passionate about Filipino fashion and quality.</div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon"><i class="ri-heart-2-line"></i></div>
+        <div class="info-title">Our Values</div>
+        <div class="info-desc">Quality, Affordability, and Customer Satisfaction. Local style, global standards.</div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon"><i class="ri-flag-2-line"></i></div>
+        <div class="info-title">Our Goal</div>
+        <div class="info-desc">Trusted name in Filipino fashion. Celebrate local, stay on trend.</div>
+      </div>
+    </section>
+
+    <!-- Testimonials & FAQ -->
+    <section class="info-sections" style="margin-bottom:2.8rem;">
+      <div class="info-card">
+        <div class="info-icon"><i class="ri-chat-3-line"></i></div>
+        <div class="info-title">Testimonial</div>
+        <div class="info-desc">“Levara Style Wardrobe always delivers high-quality clothing! I love their trendy designs.” – Maria R., Parañaque City</div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon"><i class="ri-question-answer-line"></i></div>
+        <div class="info-title">FAQ</div>
+        <div class="info-desc"><strong>Delivery?</strong> Nationwide PH.<br><strong>Returns?</strong> 7 days, exchange/store credit.<br><strong>Contact?</strong> admin@levarastyle.online, +63 915 304 7861.</div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon"><i class="ri-truck-fill"></i></div>
+        <div class="info-title">Delivery Information</div>
+        <div class="info-desc">We partner with trusted couriers; tracking and delivery fees based on location.</div>
+      </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section style="background:linear-gradient(90deg,#f9e5ef 0%,#f8f5ff 100%);border-radius:var(--radius);box-shadow:var(--shadow);padding:2.2rem 1.25rem;max-width:650px;margin:3rem auto 2.5rem;text-align:center;" id="newsletter">
+      <div style="font-size:1.4rem;font-weight:700;margin-bottom:.5rem;color:var(--primary);">Stay in the Loop!</div>
+      <div style="color:#6c7a91;font-size:1.05rem;margin-bottom:1.1rem;">
+        Get the latest on new arrivals, exclusive offers, and more delivered straight to your inbox.
+      </div>
+      <form style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;" autocomplete="off">
+        <input type="email" style="padding:0.75rem 1.25rem;border-radius:.5rem;border:1px solid #e6ecf6;background:#f7f8fb;font-size:1rem;min-width:210px;color:var(--text-dark);transition:border .2s;" placeholder="Your email address" required />
+        <button type="submit" style="background:var(--primary);color:var(--white);border-radius:.5rem;padding:0.75rem 2.1rem;font-weight:600;font-size:1rem;border:none;transition:background .2s;cursor:pointer;">Subscribe</button>
+      </form>
+    </section>
+
+    <!-- Policies -->
+    <section class="policy-sections" id="policies">
+      <div class="policy-card">
+        <div class="policy-title">Privacy Policy</div>
+        <div class="policy-body">
+          Your privacy is important to us. We are committed to protecting your information and will never share it with third parties without your consent. <br><br>
+          <em>This is a placeholder. The detailed privacy policy will be available soon.</em>
+        </div>
+      </div>
+      <div class="policy-card">
+        <div class="policy-title">Terms of Service</div>
+        <div class="policy-body">
+          By using Levara Style Wardrobe, you agree to our terms and conditions, including compliance with applicable laws and respect for intellectual property. <br><br>
+          <em>This is a placeholder. The detailed terms will be available soon.</em>
+        </div>
+      </div>
+      <div class="policy-card">
+        <div class="policy-title">Refund Policy</div>
+        <div class="policy-body">
+          Not satisfied with your purchase? We offer easy returns and exchanges for eligible products within 7 days of delivery. <br><br>
+          <em>This is a placeholder. Full refund policy coming soon.</em>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer" id="contact">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <img src="image/LOGO.png" alt="Levara Style Wardrobe Logo" />
+          Levara Style Wardrobe
+        </div>
+        <div class="footer-desc">
+          Located at Santa Rita Street, Barangay Moonwalk, Parañaque City, NCR, 1709, Philippines.<br>
+          Email: <a href="mailto:admin@levarastyle.online" style="color:var(--accent);">admin@levarastyle.online</a><br>
+          Phone: <a href="tel:+639153047861" style="color:var(--accent);">+63 915 304 7861</a>
+        </div>
+      </div>
+      <div class="footer-links-group">
+        <div class="footer-links-title">Company</div>
+        <div class="footer-links">
+          <a href="#about" class="footer-link">About Us</a>
+          <a href="#policies" class="footer-link">Policies</a>
+          <a href="#contact" class="footer-link">Contact</a>
+        </div>
+      </div>
+      <div class="footer-links-group">
+        <div class="footer-links-title">Customer Care</div>
+        <div class="footer-links">
+          <a href="#shop" class="footer-link">Shop</a>
+          <a href="#newsletter" class="footer-link">Newsletter</a>
+          <a href="#policies" class="footer-link">Returns</a>
+        </div>
+      </div>
+      <div class="footer-links-group">
+        <div class="footer-links-title">Legal</div>
+        <div class="footer-links">
+          <a href="privacy-policy.html" class="footer-link">Privacy Policy</a>
+          <a href="terms.html" class="footer-link">Terms of Service</a>
+          <a href="refund-policy.html" class="footer-link">Refund Policy</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; <span id="footer-year"></span> Levara Style Wardrobe. All rights reserved. Built for Filipino fashion.
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    // Navigation for mobile
+    const navToggle = document.getElementById('nav-toggle');
+    const navClose = document.getElementById('nav-close');
+    const navList = document.getElementById('nav-list');
+    navToggle && navToggle.addEventListener('click', () => {
+      navList.classList.add('open');
+    });
+    navClose && navClose.addEventListener('click', () => {
+      navList.classList.remove('open');
+    });
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', () => navList.classList.remove('open'));
+    });
+
+    // Cart functionality
+    let cart = [];
+
+    const products = [
+      {
+        id: 1,
+        name: "Classic White Tee",
+        price: 299,
+        img: "image/placeholder.png"
+      },
+      {
+        id: 2,
+        name: "Office Skirt",
+        price: 399,
+        img: "image/placeholder.png"
+      },
+      {
+        id: 3,
+        name: "Denim Jacket",
+        price: 799,
+        img: "image/placeholder.png"
+      },
+      {
+        id: 4,
+        name: "Fashion Scarf",
+        price: 199,
+        img: "image/placeholder.png"
+      }
+    ];
+
+    const cartBtn = document.getElementById('cart-btn');
+    const cartSidebar = document.getElementById('cart-sidebar');
+    const cartCloseBtn = document.getElementById('cart-close-btn');
+    const cartOverlay = document.getElementById('cart-overlay');
+    const cartItemsContainer = document.getElementById('cart-items');
+    const cartItemsCount = document.getElementById('cart-items-count');
+    const cartTotal = document.getElementById('cart-total');
+    const checkoutBtn = document.getElementById('checkout-btn');
+
+    function openCart() {
+      cartSidebar.classList.add('open');
+      cartOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeCart() {
+      cartSidebar.classList.remove('open');
+      cartOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    cartBtn && cartBtn.addEventListener('click', openCart);
+    cartCloseBtn && cartCloseBtn.addEventListener('click', closeCart);
+    cartOverlay && cartOverlay.addEventListener('click', closeCart);
+
+    // Add to cart logic
+    document.querySelectorAll('.product-add').forEach((btn, idx) => {
+      btn.addEventListener('click', function() {
+        const card = btn.closest('.product-card');
+        const pid = parseInt(card.getAttribute('data-id'));
+        addToCart(pid);
+        openCart();
+      });
+    });
+
+    function addToCart(productId) {
+      const prod = products.find(p => p.id === productId);
+      const itemIndex = cart.findIndex(i => i.id === productId);
+      if (itemIndex > -1) {
+        cart[itemIndex].qty += 1;
+      } else {
+        cart.push({
+          id: prod.id,
+          name: prod.name,
+          price: prod.price,
+          img: prod.img,
+          qty: 1
+        });
+      }
+      renderCart();
+    }
+
+    function increaseQty(productId) {
+      const item = cart.find(i => i.id === productId);
+      if (item) {
+        item.qty += 1;
+        renderCart();
+      }
+    }
+
+    function decreaseQty(productId) {
+      const item = cart.find(i => i.id === productId);
+      if (item && item.qty > 1) {
+        item.qty -= 1;
+        renderCart();
+      }
+    }
+
+    function removeItem(productId) {
+      cart = cart.filter(i => i.id !== productId);
+      renderCart();
+    }
+
+    function renderCart() {
+      cartItemsContainer.innerHTML = '';
+      if (cart.length === 0) {
+        cartItemsContainer.innerHTML = '<div style="text-align:center;color:#aaa;font-size:1rem;">Your cart is empty.</div>';
+      } else {
+        cart.forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'cart-item';
+          div.innerHTML = `
+            <img src="${item.img}" alt="${item.name}" class="cart-item-img">
+            <div class="cart-item-details">
+              <div class="cart-item-title">${item.name}</div>
+              <div class="cart-item-price">₱${item.price}</div>
+              <div class="cart-item-qty">
+                <button class="cart-item-qty-btn" aria-label="Decrease quantity"><i class="ri-subtract-line"></i></button>
+                <span>${item.qty}</span>
+                <button class="cart-item-qty-btn" aria-label="Increase quantity"><i class="ri-add-line"></i></button>
+                <button class="cart-item-remove" aria-label="Remove item"><i class="ri-delete-bin-6-line"></i></button>
+              </div>
+            </div>
+          `;
+          // Decrease qty
+          div.querySelector('.cart-item-qty-btn[aria-label="Decrease quantity"]').addEventListener('click', function() {
+            decreaseQty(item.id);
+          });
+          // Increase qty
+          div.querySelector('.cart-item-qty-btn[aria-label="Increase quantity"]').addEventListener('click', function() {
+            increaseQty(item.id);
+          });
+          // Remove item
+          div.querySelector('.cart-item-remove').addEventListener('click', function() {
+            removeItem(item.id);
+          });
+          cartItemsContainer.appendChild(div);
+        });
+      }
+      // Update footer
+      cartItemsCount.textContent = cart.reduce((total, i) => total + i.qty, 0);
+      cartTotal.textContent = '₱' + cart.reduce((total, i) => total + i.qty * i.price, 0);
+    }
+
+    // Initial cart render (empty)
+    renderCart();
+
+    // Footer year
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+    // Newsletter placeholder
+    document.querySelector('form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Thank you for subscribing! (This is a placeholder.)');
+      this.reset();
+    });
+
+    // Checkout button - redirect to order-summary.html
+    checkoutBtn && checkoutBtn.addEventListener('click', function() {
+      window.location.href = "order-summary.html";
+    });
+  </script>
+</body>
+</html>
