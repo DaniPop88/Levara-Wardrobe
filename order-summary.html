@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Order Summary | Levara Style Wardrobe</title>
-  <link rel="icon" type="image/png" href="image/FAVICON.png" />
+  <link rel="icon" type="image/png" href="image/LOGO.png" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
   <style>
@@ -274,6 +274,18 @@
       .summary-header .logo { font-size: 1.1rem; }
       main { padding: 0.8rem 0.1rem 0.7rem 0.1rem;}
     }
+    :root { --primary: #72243f; --accent: #d9a441; --secondary: #f4f0eb; --white: #fffdf9; --text-dark: #292522; --shadow: 0 18px 45px rgba(65,35,30,.09); }
+    body { background: #f4f0eb; background-image: radial-gradient(rgba(114,36,63,.06) 1px, transparent 1px); background-size: 24px 24px; }
+    main { border: 1px solid rgba(114,36,63,.08); border-radius: 1.4rem; box-shadow: 0 20px 55px rgba(65,35,30,.11); }
+    .summary-header .logo, .summary-title, .order-details-title, .order-total, .step-title, .payment-section .payment-title { color: var(--primary); }
+    .summary-header .logo { color: var(--accent); }
+    .summary-header .logo img { border-radius: 50%; border: 2px solid rgba(217,164,65,.7); }
+    .order-details-box, .payment-section { background: #ead7ce; }
+    .step-box { border-color: rgba(114,36,63,.1); box-shadow: 0 10px 25px rgba(65,35,30,.06); }
+    .confirmation-section .confirm-btn { background: var(--primary); border-radius: 999px; }
+    .payment-section .payment-link-btn { background: var(--accent); color: var(--primary); border-radius: 999px; }
+    footer { background: #3a1d28; border-radius: 1.4rem 1.4rem 0 0; }
+    .footer-logo, .footer-contact { color: #f5d88c; }
   </style>
 </head>
 <body>
@@ -302,7 +314,7 @@
         </li>
         <li>
           Delivery Address:
-          <span>Santa Rita Street, Barangay Moonwalk, Parañaque City, NCR, 1709</span>
+          <span>Santa Rita Street, Barangay Moonwalk, Parañaque City, National Capital Region (NCR), 1709, Philippines.</span>
         </li>
         <li>
           Contact Number:
@@ -339,7 +351,7 @@
       <div class="payment-desc">
         Please follow the link below to complete your payment. Payment must be made within <strong>24 hours</strong> to secure your items. Orders not paid within this timeframe will be automatically cancelled.
       </div>
-      <button class="payment-link-btn" onclick="window.open('https://pay.levarastyle.online', '_blank')">Proceed to Payment</button>
+      <button class="payment-link-btn" onclick="window.open('https://levarawardrobe.store', '_blank')">Proceed to Payment</button>
       <div class="warning">
         To avoid cancellation, please complete payment as soon as possible. If you have any questions, reach out to our team for assistance.
       </div>
@@ -356,9 +368,11 @@
       Levara Style Wardrobe
     </div>
     <div class="footer-contact">
-      Santa Rita Street, Barangay Moonwalk, Parañaque City, NCR, 1709, Philippines.<br>
-      Email: <a href="mailto:admin@levarastyle.online" style="color:var(--accent);">admin@levarastyle.online</a><br>
-      Phone: <a href="tel:+639153047861" style="color:var(--accent);">+63 915 304 7861</a>
+      Santa Rita Street, Barangay Moonwalk, Parañaque City, National Capital Region (NCR), 1709, Philippines.<br>
+      Email: <a href="mailto:sales@levarawardrobe.store" style="color:var(--accent);">sales@levarawardrobe.store</a><br>
+      Phone: <a href="tel:+639153047861" style="color:var(--accent);">+63 915 304 7861</a><br>
+      Website: <a href="https://levarawardrobe.store" style="color:var(--accent);">levarawardrobe.store</a><br>
+      Business Registration No.: 419-736-280-000
     </div>
     <div class="footer-bottom">
       &copy; <span id="footer-year"></span> Levara Style Wardrobe. All rights reserved.
